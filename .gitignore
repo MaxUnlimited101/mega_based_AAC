@@ -204,3 +204,6 @@ Thumbs.db
 *.swp
 *.swo
 *~
+
+# Binary
+approximation
