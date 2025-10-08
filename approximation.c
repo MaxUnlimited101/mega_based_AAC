@@ -62,11 +62,11 @@ void freeMatrix(int **mat, int n) {
     free(mat);
 }
 
-// static inline void swap(int *a, int *b) {
-//     int t = *a;
-//     *a = *b;
-//     *b = t;
-// }
+static inline void swap(int *a, int *b) {
+    int t = *a;
+    *a = *b;
+    *b = t;
+}
 
 
 void fill_with_zeros(int **mat, int n) {
