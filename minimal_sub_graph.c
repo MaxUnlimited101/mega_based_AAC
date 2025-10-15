@@ -150,8 +150,8 @@ void minimal_sub_graph_exact(int **graph1, int n1, int **graph2, int n2, int *pe
     }
 }
 
-void minimal_sub_graph_approximation(int **graph1, int n1, int **graph2, int n2, int *minimal_change, int **minimal_subgraph)
-{
+void minimal_sub_graph_approximation(int **graph1, int n1, int **graph2, int n2, int *permutating, int *minimal_change, int **minimal_subgraph) {
+    
     int** current = allocMatrix(n2);
     int current_change = 0;
     int max_stride = (n2 - n1) / (n1 - 1);
@@ -162,24 +162,23 @@ void minimal_sub_graph_approximation(int **graph1, int n1, int **graph2, int n2,
                 fill_with_zeros(current, n2);
                 current_change = 0;
 
+
+
                 for(int row = 0; row < n1; row++) {
                     for (int coloumn = 0; coloumn < n1; coloumn++) {
-                        if(graph1[row][coloumn] > graph2[i + row + stride*row][i + coloumn + stride*coloumn]) {
-                            current_change += graph1[row][coloumn] - graph2[i + row + stride*row][i + coloumn + stride*coloumn];
+                        if(graph1[permutating[row]][permutating[coloumn]] > graph2[i + row + stride*row][i + coloumn + stride*coloumn]) {
+                            current_change += graph1[permutating[row]][permutating[coloumn]] - graph2[i + row + stride*row][i + coloumn + stride*coloumn];
                             current[i + row + stride*row][i + coloumn + stride*coloumn] = 
-                            graph1[row][coloumn] - graph2[i + row + stride*row][i + coloumn + stride*coloumn];
+                            graph1[permutating[row]][permutating[coloumn]] - graph2[i + row + stride*row][i + coloumn + stride*coloumn];
                         }
                     }
                 }
 
-                if (*minimal_change == -1 || current_change < *minimal_change) {
-                    *minimal_change = current_change;
+                if (minimal_change == -1 || current_change < minimal_change) {
+                    minimal_change = current_change;
                     minimal_subgraph = current;
                 }
             
-        }
-        if (minimal_subgraph != current) {
-            freeMatrix(current, n2);
         }
     }
     for(int stride = 0; stride <= max_stride; stride++){
@@ -198,14 +197,32 @@ void minimal_sub_graph_approximation(int **graph1, int n1, int **graph2, int n2,
                     }
                 }
 
-                if (*minimal_change == -1 || current_change < *minimal_change) {
-                    *minimal_change = current_change;
+                if (minimal_change == -1 || current_change < minimal_change) {
+                    minimal_change = current_change;
                     minimal_subgraph = current;
                 }
             
         }
-        if (minimal_subgraph != current) {
-            freeMatrix(current, n2);
-        }
     }
+    if (minimal_subgraph != current) {
+        freeMatrix(current, n2);
+    }
+}
+
+void permutations2(int *arr, int n, int idx, int n1, int n2, int **graph1, int **graph2, int *minimal_change, int **minimal_subgraph) {
+    if (idx == n) {
+        minimal_sub_graph_approximation(graph1, n1, graph2, n2, arr, minimal_change, minimal_subgraph);
+        return;
+    }
+
+    for (int i = idx; i < n; ++i) {
+        swap(&arr[idx], &arr[i]);              // Choose
+        permutations2(arr, n, idx + 1, n1, n2, graph1, graph2, minimal_change, minimal_subgraph);  // Explore
+        swap(&arr[idx], &arr[i]);              // Backtrack
+    }
+}
+
+// Wrapper to call permutations
+void permute2(int *arr, int n, int n1, int n2, int **graph1, int **graph2, int *minimal_change, int **minimal_subgraph) {
+    permutations2(arr, n, 0, n1, n2, graph1, graph2, minimal_change, minimal_subgraph);
 }

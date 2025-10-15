@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void minimal_sub_graph_approximation(int **graph1, int n1, int **graph2, int n2, int *minimal_change, int **minimal_subgraph);
+void minimal_sub_graph_approximation(int **graph1, int n1, int **graph2, int n2, int *permutating, int *minimal_change, int **minimal_subgraph);
 void minimal_sub_graph_exact(int **graph1, int n1, int **graph2, int n2, int *permutating, int *minimal_change, int **minimal_subgraph);
 
 // allocate n×n matrix
@@ -30,5 +30,10 @@ void permutations(int *arr, int n, int idx, int n1, int n2, int **graph1, int **
 void permute(int *arr, int n, int n1, int n2, int **graph1, int **graph2, int *minimal_change, int **minimal_subgraph);
 
 void fill_with_zeros(int **mat, int n);
+
+
+
+void permute2(int *arr, int n, int n1, int n2, int **graph1, int **graph2, int *minimal_change, int **minimal_subgraph);
+void permutations2(int *arr, int n, int idx, int n1, int n2, int **graph1, int **graph2, int *minimal_change, int **minimal_subgraph);
 
 #endif // MINIMAL_SUB_GRAPH_H

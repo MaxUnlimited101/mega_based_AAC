@@ -49,6 +49,7 @@ void* worker_function(void* args)
         printf("Thread %d processing task %d/%d\n", index, i + 1, tasks_size);
         int minimal_change = -1;
         int **minimal_subgraph = NULL;
+        int perm_coeff = 3;
 
         int n1, n2;
         n1 = tasks[i].G_size;
@@ -70,8 +71,13 @@ void* worker_function(void* args)
         {
             permutating[i] = i;
         }
+        int *permutating2 = malloc(n1 * sizeof(int));
+        for (int i = 0; i < n1; i++)
+        {
+            permutating2[i] = i;
+        }
 
-        minimal_sub_graph_approximation(graph1, n1, graph2, n2, &minimal_change, minimal_subgraph);
+        permute2(permutating2, perm_coeff, n1, n2, graph1, graph2, &minimal_change, minimal_subgraph);
         results[i].approx = minimal_change;
         minimal_change = -1;
         permute(permutating, n2, n1, n2, graph1, graph2, &minimal_change, minimal_subgraph);
