@@ -71,11 +71,7 @@ static inline void swap(int *a, int *b) {
 // Recursive helper to generate permutations
 void permutations(int *arr, int n, int idx, int n1, int n2, int **graph1, int **graph2) {
     if (idx == n) {
-        // Print one permutation
-        for (int i = 0; i < n; ++i) {
-            printf("%d ", arr[i]);
-        }
-        printf("\n");
+
         minimal_sub_graph(graph1, n1, graph2, n2, arr);
         return;
     }
