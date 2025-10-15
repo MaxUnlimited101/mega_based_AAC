@@ -207,3 +207,5 @@ Thumbs.db
 
 # Binary
 approximation
+exact
+test_for_approx_upper_limit.d*
