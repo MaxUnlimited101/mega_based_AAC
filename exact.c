@@ -36,6 +36,7 @@ void readMatrix(FILE *fp, int **mat, int n) {
 }
 
 void writeMatrix(FILE *fp, int **mat, int n) {
+    fprintf(fp, "%d\n", n);
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
             fprintf(fp, "%d ", mat[i][j]);
@@ -119,16 +120,22 @@ void minimal_sub_graph(int **graph1, int n1, int **graph2, int n2, int *permutat
     }
 }
 
-int main(void) {
-    FILE *fp = fopen("input.txt", "r");
-    if (!fp) {
-        fprintf(stderr, "Error: could not open input.txt\n");
+int main(int argc, char *argv[]) {
+
+    if (argc != 3) {
+        fprintf(stderr, "Usage: %s <input_file> <output_file>\n", argv[0]);
         return 1;
     }
 
-    FILE *out = fopen("output.txt", "w");
+    FILE *fp = fopen(argv[1], "r");
+    if (!fp) {
+        fprintf(stderr, "Error: could not open '%s'\n", argv[1]);
+        return 1;
+    }
+
+    FILE *out = fopen(argv[2], "w");
     if (!out) {
-        fprintf(stderr, "Error: could not open output.txt\n");
+        fprintf(stderr, "Error: could not open '%s' to write\n", argv[2]);
         fclose(fp);
         return 1;
     }
@@ -153,8 +160,6 @@ int main(void) {
 
     printf("\nGraph 2 (%dx%d):\n", n2, n2);
     printMatrix(graph2, n2);
-
-
 
 
     int* permutating = malloc(n2 * sizeof(int));
