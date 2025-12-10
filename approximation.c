@@ -30,7 +30,7 @@ void readMatrix(FILE *fp, int **mat, int n) {
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
             if (fscanf(fp, "%d", &mat[i][j]) != 1) {
-                fprintf(stderr, "Error reading matrix element\n");
+                fprintf(stderr, "Error reading matrix element (%d, %d)\n", i, j);
                 exit(1);
             }
         }
@@ -38,6 +38,7 @@ void readMatrix(FILE *fp, int **mat, int n) {
 }
 
 void writeMatrix(FILE *fp, int **mat, int n) {
+    fprintf(fp, "%d\n", n);
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
             fprintf(fp, "%d ", mat[i][j]);
@@ -136,34 +137,22 @@ void minimal_sub_graph_approximation(int **graph1, int n1, int **graph2, int n2,
     }
 }
 
-void permutations(int *arr, int n, int idx, int n1, int n2, int **graph1, int **graph2) {
-    if (idx == n) {
-        minimal_sub_graph_approximation(graph1, n1, graph2, n2, arr);
-        return;
-    }
+int main(int argc, char *argv[]) {
 
-    for (int i = idx; i < n; ++i) {
-        swap(&arr[idx], &arr[i]);              // Choose
-        permutations(arr, n, idx + 1, n1, n2, graph1, graph2);  // Explore
-        swap(&arr[idx], &arr[i]);              // Backtrack
-    }
-}
-
-// Wrapper to call permutations
-void permute(int *arr, int n, int n1, int n2, int **graph1, int **graph2) {
-    permutations(arr, n, 0, n1, n2, graph1, graph2);
-}
-
-int main(void) {
-    FILE *fp = fopen("input.txt", "r");
-    if (!fp) {
-        fprintf(stderr, "Error: could not open input.txt\n");
+    if (argc != 3) {
+        fprintf(stderr, "Usage: %s <input_file> <output_file>\n", argv[0]);
         return 1;
     }
 
-    FILE *out = fopen("output.txt", "w");
+    FILE *fp = fopen(argv[1], "r");
+    if (!fp) {
+        fprintf(stderr, "Error: could not open '%s'\n", argv[1]);
+        return 1;
+    }
+
+    FILE *out = fopen(argv[2], "w");
     if (!out) {
-        fprintf(stderr, "Error: could not open output.txt\n");
+        fprintf(stderr, "Error: could not open '%s' to write\n", argv[2]);
         fclose(fp);
         return 1;
     }
@@ -202,6 +191,7 @@ int main(void) {
     printf("Minimal subgraph:\n");
     printMatrix(minimal_subgraph, n2);
 
+    fprintf(out, "%d\n", minimal_change);
     writeMatrix(out, minimal_subgraph, n2);
     fclose(out);
 

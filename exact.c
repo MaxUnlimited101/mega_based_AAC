@@ -28,7 +28,7 @@ void readMatrix(FILE *fp, int **mat, int n) {
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
             if (fscanf(fp, "%d", &mat[i][j]) != 1) {
-                fprintf(stderr, "Error reading matrix element\n");
+                fprintf(stderr, "Error reading matrix element (%d, %d)\n", i, j);
                 exit(1);
             }
         }
@@ -173,6 +173,7 @@ int main(int argc, char *argv[]) {
     printf("Minimal subgraph:\n");
     printMatrix(minimal_subgraph, n2);
 
+    fprintf(out, "%d\n", minimal_change);
     writeMatrix(out, minimal_subgraph, n2);
     fclose(out);
 
