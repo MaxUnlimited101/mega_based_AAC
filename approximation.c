@@ -1,10 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 int minimal_change = -1;
 int** minimal_subgraph = NULL;
-int permutation_coeff = 3;
 
 void minimal_sub_graph(int **graph1, int n1, int **graph2, int n2, int *permutating);
 
@@ -80,57 +78,30 @@ void fill_with_zeros(int **mat, int n) {
     }
 }
 
-void minimal_sub_graph_approximation(int **graph1, int n1, int **graph2, int n2, int *permutating) {
+void minimal_sub_graph_approximation(int **graph1, int n1, int **graph2, int n2) {
     
     int** current = allocMatrix(n2);
     int current_change = 0;
-    int max_stride = (n2 - n1) / (n1 - 1);
 
-    for(int stride = 0; stride <= max_stride; stride++){
-        for (int i = 0; (n1 - 1)*stride + n1 + i < n2; i++){
-        
-                fill_with_zeros(current, n2);
-                current_change = 0;
+    for (int i = 0; i <= n2 - n1; i++){
+    
+            fill_with_zeros(current, n2);
+            current_change = 0;
 
-                for(int row = 0; row < n1; row++) {
-                    for (int coloumn = 0; coloumn < n1; coloumn++) {
-                        if(graph1[permutating[row]][permutating[coloumn]] > graph2[i + row + stride*row][i + coloumn + stride*coloumn]) {
-                            current_change += graph1[permutating[row]][permutating[coloumn]] - graph2[i + row + stride*row][i + coloumn + stride*coloumn];
-                            current[i + row + stride*row][i + coloumn + stride*coloumn] = 
-                            graph1[permutating[row]][permutating[coloumn]] - graph2[i + row + stride*row][i + coloumn + stride*coloumn];
-                        }
+            for(int k = 0; k < n1; k++) {
+                for (int l = 0; l < n1; l++) {
+                    if(graph1[k][l] > graph2[i + k][i + l]) {
+                        current_change += abs(graph1[k][l] - graph2[i + k][i + l]);
+                        current[i + k][i + l] = graph1[k][l] - graph2[i + k][i + l];
                     }
                 }
+            }
 
-                if (minimal_change == -1 || current_change < minimal_change) {
-                    minimal_change = current_change;
-                    minimal_subgraph = current;
-                }
-            
-        }
-    }
-    for(int stride = 0; stride <= max_stride; stride++){
-        for (int i = 0; (n1 - 1)*stride + n1 + i < n2; i++){
+            if (minimal_change == -1 || current_change < minimal_change) {
+                minimal_change = current_change;
+                minimal_subgraph = current;
+            }
         
-                fill_with_zeros(current, n2);
-                current_change = 0;
-
-                for(int row = 0; row < n1; row++) {
-                    for (int coloumn = 0; coloumn < n1; coloumn++) {
-                        if(graph1[n1 - row - 1][n1 - coloumn - 1] > graph2[i + row + stride*row][i + coloumn + stride*coloumn]) {
-                            current_change += graph1[n1 - row - 1][n1 - coloumn - 1] - graph2[i + row + stride*row][i + coloumn + stride*coloumn];
-                            current[i + row + stride*row][i + coloumn + stride*coloumn] = 
-                            graph1[n1 - row - 1][n1 - coloumn - 1] - graph2[i + row + stride*row][i + coloumn + stride*coloumn];
-                        }
-                    }
-                }
-
-                if (minimal_change == -1 || current_change < minimal_change) {
-                    minimal_change = current_change;
-                    minimal_subgraph = current;
-                }
-            
-        }
     }
     if (minimal_subgraph != current) {
         freeMatrix(current, n2);
@@ -178,14 +149,9 @@ int main(int argc, char *argv[]) {
     printf("\nGraph 2 (%dx%d):\n", n2, n2);
     printMatrix(graph2, n2);
 
-    int* permutating = malloc(n1 * sizeof(int));
-    for (int i = 0; i < n1; i++) {
-        permutating[i] = i;
-    }
 
-    permute(permutating, permutation_coeff, n1, n2, graph1, graph2);
 
-    free(permutating);
+    minimal_sub_graph_approximation(graph1, n1, graph2, n2);
 
     printf("\nMinimal change: %d\n", minimal_change);
     printf("Minimal subgraph:\n");
