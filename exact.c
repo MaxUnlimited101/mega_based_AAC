@@ -157,9 +157,13 @@ int main(int argc, char *argv[]) {
 
     printf("Graph 1 (%dx%d):\n", n1, n1);
     printMatrix(graph1, n1);
+    fprinf(out, "Graph 1 (%dx%d):\n", n1, n1);
+    writeMatrix(out, graph1, n1);
 
     printf("\nGraph 2 (%dx%d):\n", n2, n2);
     printMatrix(graph2, n2);
+    fprintf(out, "\nGraph 2 (%dx%d):\n", n2, n2);
+    writeMatrix(out, graph2, n2);
 
 
     int* permutating = malloc(n2 * sizeof(int));
@@ -170,10 +174,12 @@ int main(int argc, char *argv[]) {
     permute(permutating, n2, n1, n2, graph1, graph2);
 
     printf("\nMinimal change: %d\n", minimal_change);
-    printf("Minimal subgraph:\n");
+    printf("Minimal extention of Graph 2:\n");
+    printf("Min. ext. of Graph 2 + Graph 2 = Graph 3 that includes Graph 1:\n");
     printMatrix(minimal_subgraph, n2);
 
     fprintf(out, "%d\n", minimal_change);
+    fprintf(out, "Min. ext. of Graph 2 + Graph 2 = Graph 3 that includes Graph 1:\n");
     writeMatrix(out, minimal_subgraph, n2);
     fclose(out);
 
